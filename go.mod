@@ -1,4 +1,4 @@
-module github.com/yourname/mindb
+module github.com/typicallhavok/mindb
 
 go 1.25.0
 
