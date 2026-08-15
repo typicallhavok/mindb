@@ -352,9 +352,9 @@ accident.
 
 | stage | contents | state |
 |---|---|---|
-| 1 | correct exact engine — `pkg/math`, `pkg/core`, `pkg/api`, server | — |
-| 2 | bound-and-refine cascade in pure Go, differential test | — |
-| 3 | Avo-generated AVX2 asymmetric int8 kernel | — |
+| 1 | correct exact engine — `pkg/math`, `pkg/core`, `pkg/api`, server | done |
+| 2 | bound-and-refine cascade in pure Go, differential test | done |
+| 3 | Avo-generated AVX2 asymmetric int8 kernel | done |
 | 4 | rotated 1-bit tier (RaBitQ-style) | deferred, research-risk |
 
 Each stage ships something working. Stage 2 is expected to be *slower* than stage 1 — its

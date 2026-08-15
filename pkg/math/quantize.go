@@ -70,15 +70,21 @@ func Quantize(v []float32, code []int8) (scale, residual float32) {
 // 4.3x tighter than quantizing both sides, and it means the SIMD kernel needs
 // only AVX2 rather than AVX-512 VNNI.
 //
-// This pure-Go version is the correctness oracle and the fallback for platforms
-// without AVX2. It is deliberately slower than the float32 path — Go cannot emit
-// the instruction that makes int8 fast, so the cascade does not pay off until
-// stage 3 replaces this with generated assembly.
+// The actual work is dispatched to dotInt8Impl, which is the generated AVX2
+// kernel when HasFastInt8 is true and the pure-Go loop otherwise (see
+// kernel_amd64.go / kernel_generic.go).
 func DotInt8(q []float32, code []int8) float32 {
 	if len(q) != len(code) {
 		panic("mindb/math: DotInt8 on vectors of unequal length")
 	}
+	return dotInt8Impl(q, code)
+}
 
+// dotInt8Generic is the correctness oracle and the fallback for platforms
+// without AVX2. It is deliberately slower than the float32 path — Go cannot
+// emit the instruction that makes int8 fast, so the cascade does not pay off
+// without the generated kernel.
+func dotInt8Generic(q []float32, code []int8) float32 {
 	var s0, s1, s2, s3, s4, s5, s6, s7 float32
 	i := 0
 	for ; i+8 <= len(q); i += 8 {

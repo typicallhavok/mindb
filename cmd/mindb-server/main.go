@@ -139,9 +139,8 @@ func startPeriodicSnapshots(engine *core.Engine, path string, every time.Duratio
 // estimateRAM reports the bytes reserved for vector storage. Payloads are not
 // counted; they are caller-sized and allocated on demand.
 func estimateRAM(e *core.Engine) int64 {
-	// float32 copy only for now; stage 2 adds int8 codes and per-vector
-	// metadata, taking this to dims*5 + 8 bytes per vector.
-	return int64(e.Cap()) * int64(e.Dims()) * 4
+	// Per vector: dims*4 (float32) + dims*1 (int8 code) + 4 (scale) + 4 (residual).
+	return int64(e.Cap()) * (int64(e.Dims())*5 + 8)
 }
 
 func humanBytes(n int64) string {

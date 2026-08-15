@@ -8,3 +8,5 @@ const (
 	hasFastInt8 = false
 	kernelName  = "pure-go"
 )
+
+var dotInt8Impl = dotInt8Generic

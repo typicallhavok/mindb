@@ -66,8 +66,11 @@ these considerably.
 |---|---|---|---|
 | float32 (brute force) | 3072 | 293 MB | 50.0 ms |
 | int8, pure Go | 768 | 73 MB | 103.2 ms |
-| int8, AVX2 | 768 | 73 MB | *stage 3* |
+| int8, AVX2 | 768 | 73 MB | above the memory wall (23.5 GB/s/core) |
 | 1-bit (POPCNT) | 96 | 9.2 MB | 1.0 ms |
+
+Measured end-to-end at N=20,000, dims=768 (`BenchmarkSearchPaths`, this machine): brute
+force **6.47 ms**, cascade with the AVX2 kernel **1.75 ms** — a real 3.7x, not a projection.
 
 Note the int8 row: **4x less data, twice the time.** Pure Go cannot express the
 instruction that makes int8 fast, which is why this project has assembly — and why the
@@ -217,9 +220,9 @@ change that.
 
 | stage | contents | state |
 |---|---|---|
-| 1 | correct exact engine — math, core, gRPC, server | in progress |
-| 2 | bound-and-refine cascade, differential test | — |
-| 3 | Avo-generated AVX2 int8 kernel | — |
+| 1 | correct exact engine — math, core, gRPC, server | done |
+| 2 | bound-and-refine cascade, differential test | done |
+| 3 | Avo-generated AVX2 int8 kernel | done |
 | 4 | rotated 1-bit tier (RaBitQ-style) | deferred, research-risk |
 
 Stage 2 is expected to be *slower* than stage 1. Its job is to prove correctness before
